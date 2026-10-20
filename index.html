@@ -9,9 +9,9 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="환율">
+<meta name="apple-mobile-web-app-title" content="브리핑">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>환율</title>
+<title>오늘 브리핑</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -66,7 +66,7 @@ body {
 /* 헤더 */
 header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
 header h1 { margin: 0; font-size: 22px; font-weight: 900; letter-spacing: -0.02em; }
-header .sub { font-size: 12.5px; color: var(--muted); margin-top: 1px; }
+header .sub { font-size: 13px; color: var(--muted); margin-top: 1px; }
 .tools { display: flex; gap: 8px; }
 .icon-btn {
   position: relative; width: 40px; height: 40px; display: grid; place-items: center; padding: 0;
@@ -90,11 +90,12 @@ button:focus-visible, input:focus-visible, select:focus-visible, .chip input:foc
 .msg.err { background: var(--up-bg); color: var(--up); }
 .msg.warn { background: var(--amber-bg); color: var(--amber-ink); font-weight: 500; cursor: pointer; }
 
-/* 패널 (통화 선택 / 알림) */
+/* 패널 */
 .panel { display: none; background: var(--surface); border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
 .panel.show { display: block; }
 .panel h2 { margin: 0 0 4px; font-size: 15px; font-weight: 700; }
-.panel p { margin: 0 0 12px; font-size: 12.5px; color: var(--muted); }
+.panel h2 + p, .panel > p { margin: 0 0 10px; font-size: 12.5px; color: var(--muted); }
+.panel .gap { margin-top: 18px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { position: relative; }
 .chip input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
@@ -109,13 +110,13 @@ button:focus-visible, input:focus-visible, select:focus-visible, .chip input:foc
 }
 .btn.primary { background: var(--accent); color: #fff; }
 .btn:disabled { opacity: .5; cursor: default; }
-
-.field { display: flex; gap: 8px; margin-top: 8px; }
-select, input[type="number"] {
+.btn.small { flex: 0 0 auto; font-size: 13px; padding: 8px 12px; }
+select, input[type="number"], input[type="text"] {
   font: inherit; font-size: 15px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 12px;
   background: var(--bg); color: var(--ink); min-width: 0;
 }
 select { width: 100%; }
+.field { display: flex; gap: 8px; margin-top: 8px; }
 .field .num { flex: 1; display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
 .field .num input { width: 100%; }
 .field .btn { flex: 0 0 auto; }
@@ -124,50 +125,70 @@ select { width: 100%; }
 .alert-list li.fired { background: var(--amber-bg); color: var(--amber-ink); }
 .alert-list button { border: 0; background: transparent; color: var(--muted); font-size: 18px; line-height: 1; padding: 2px 6px; cursor: pointer; }
 
-/* 환율 보드 */
-.hero {
-  background: var(--hero); color: #fff; border-radius: 22px; padding: 22px 22px 20px; box-shadow: var(--shadow);
-}
-.hero-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 14px; opacity: .85; }
-.hero-top b { font-size: 16px; font-weight: 700; opacity: 1; }
-.hero-rate { font-size: clamp(46px, 14.5vw, 64px); font-weight: 900; letter-spacing: -0.045em; line-height: 1.08; margin: 12px 0 10px; }
-.hero-rate small { font-size: 18px; font-weight: 500; letter-spacing: 0; opacity: .7; margin-left: 5px; }
-.hero-sub { display: flex; align-items: center; gap: 10px; font-size: 13px; opacity: .95; flex-wrap: wrap; }
-.hero-sub .prev { opacity: .75; }
+/* 날씨 히어로 */
+.hero { background: var(--hero); color: #fff; border-radius: 22px; padding: 18px 20px 18px; box-shadow: var(--shadow); }
+.w-top { display: flex; justify-content: space-between; align-items: center; font-size: 13px; opacity: .9; gap: 10px; }
+.loc { font: inherit; font-size: 14px; font-weight: 700; color: #fff; background: rgba(255, 255, 255, .14); border: 0; border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+.w-main { display: flex; align-items: center; justify-content: space-between; margin: 8px 0 12px; }
+.w-temp { font-size: 64px; font-weight: 900; letter-spacing: -0.05em; line-height: 1; }
+.w-desc { font-size: 15px; opacity: .9; margin-top: 4px; }
+.w-ico { font-size: 64px; line-height: 1; }
+.w-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.w-chips span { font-size: 12.5px; background: rgba(255, 255, 255, .14); border-radius: 999px; padding: 4px 10px; white-space: nowrap; }
+.w-msg { padding: 24px 0 8px; font-size: 14px; opacity: .9; }
 
-.pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 700; white-space: nowrap; }
+/* 카드 공통 */
+.card { background: var(--surface); border-radius: 18px; box-shadow: var(--shadow); padding: 16px 16px 14px; margin-top: 12px; }
+.card h2 { margin: 0 0 10px; font-size: 14px; font-weight: 700; color: var(--muted); display: flex; justify-content: space-between; align-items: center; }
+.empty { color: var(--muted); font-size: 14px; padding: 4px 2px; }
+
+/* 할 일 */
+.todo-add { display: flex; gap: 8px; }
+.todo-add input { flex: 1; }
+.todos { list-style: none; margin: 10px 0 0; padding: 0; }
+.todos li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 2px; border-top: 1px solid var(--line); }
+.todos li:first-child { border-top: 0; }
+.todos label { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; font-size: 15px; cursor: pointer; }
+.todos input[type="checkbox"] { width: 20px; height: 20px; flex: 0 0 auto; accent-color: var(--accent); margin: 0; }
+.todos .t { overflow-wrap: anywhere; }
+.todos li.done .t { color: var(--muted); text-decoration: line-through; }
+.todos button { border: 0; background: transparent; color: var(--muted); font-size: 18px; line-height: 1; padding: 2px 6px; cursor: pointer; }
+.link-btn { border: 0; background: transparent; color: var(--accent); font: inherit; font-size: 12.5px; font-weight: 500; cursor: pointer; padding: 0; }
+
+/* 시장 */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 8px; }
+.tile { background: var(--bg); border-radius: 14px; padding: 11px 12px; min-width: 0; }
+.tn { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tv { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; margin: 2px 0 6px; white-space: nowrap; }
+.pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; }
 .pill.up { background: var(--up-bg); color: var(--up); }
 .pill.down { background: var(--down-bg); color: var(--down); }
 .pill.flat { background: var(--flat-bg); color: var(--flat); }
-.hero .pill.up { background: #ffe6ea; color: #c8283f; }
-.hero .pill.down { background: #e1ecff; color: #1a5fd0; }
-.hero .pill.flat { background: #eceff4; color: #4a566b; }
-
-.rows { margin-top: 12px; background: var(--surface); border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; }
-.row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; border-top: 1px solid var(--line); }
-.row:first-child { border-top: 0; }
-.row.hit { background: var(--amber-bg); }
-.rn b { display: block; font-size: 15.5px; font-weight: 700; }
-.rn span { font-size: 12.5px; color: var(--muted); }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 2px; border-top: 1px solid var(--line); }
+.row:first-child { border-top: 0; padding-top: 2px; }
+.row.hit { background: var(--amber-bg); border-radius: 10px; padding-left: 10px; padding-right: 10px; }
+.rn b { display: block; font-size: 15px; font-weight: 700; }
+.rn span { font-size: 12px; color: var(--muted); }
 .rr { text-align: right; display: grid; gap: 4px; justify-items: end; }
-.rv { font-size: 21px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
-.loading { padding: 40px 20px; text-align: center; color: var(--muted); font-size: 14px; background: var(--surface); border-radius: 18px; box-shadow: var(--shadow); }
-.note { margin: 14px 4px 0; font-size: 12px; color: var(--muted); text-align: center; }
+.rv { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+.setup { line-height: 1.6; font-size: 14px; }
+.setup b { display: block; margin-bottom: 4px; }
+.note { margin: 14px 4px 0; font-size: 12px; color: var(--muted); text-align: center; line-height: 1.6; }
 </style>
 </head>
 <body>
 <div class="app">
   <header>
     <div>
-      <h1>원화 환율</h1>
-      <div class="sub" id="updated">불러오는 중…</div>
+      <h1>오늘 브리핑</h1>
+      <div class="sub" id="today"></div>
     </div>
     <div class="tools">
       <button class="icon-btn" id="bellBtn" type="button" aria-label="목표 환율 알림" aria-expanded="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>
         <span class="badge" id="badge"></span>
       </button>
-      <button class="icon-btn" id="pickBtn" type="button" aria-label="통화 선택" aria-expanded="false">
+      <button class="icon-btn" id="setBtn" type="button" aria-label="설정" aria-expanded="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
       </button>
       <button class="icon-btn" id="refresh" type="button" aria-label="새로고침">
@@ -179,19 +200,22 @@ select { width: 100%; }
   <div class="msg err" id="error" role="alert"></div>
   <div class="msg warn" id="banner" role="alert"></div>
 
-  <section class="panel" id="pickPanel" aria-label="통화 선택">
-    <h2>보고 싶은 통화</h2>
-    <p>최대 5개까지 고를 수 있어요. 가장 먼저 고른 통화가 큰 카드로 표시됩니다.</p>
+  <section class="panel" id="setPanel" aria-label="설정">
+    <h2>날씨 지역</h2>
+    <p>도시를 고르거나 현재 위치를 사용할 수 있어요.</p>
+    <select id="locSel" aria-label="날씨 지역"></select>
+    <h2 class="gap">환율 통화</h2>
+    <p>최대 5개까지 고를 수 있어요. 먼저 고른 통화가 위에 표시됩니다.</p>
     <div class="chips" id="chips"></div>
     <div class="actions">
-      <button class="btn" id="pickCancel" type="button">취소</button>
-      <button class="btn primary" id="pickSave" type="button">저장</button>
+      <button class="btn" id="setClose" type="button">닫기</button>
+      <button class="btn primary" id="pickSave" type="button">통화 저장</button>
     </div>
   </section>
 
   <section class="panel" id="alertPanel" aria-label="목표 환율 알림">
     <h2>목표 환율 알림</h2>
-    <p>설정한 환율 이하로 내려가면 알려드려요. 이 페이지가 열려 있을 때만 동작합니다.</p>
+    <p>설정한 환율 이하로 내려가면 알려드려요. 시세를 불러올 때(페이지를 열 때, 새로고침 때) 확인합니다.</p>
     <select id="aCur" aria-label="통화"></select>
     <div class="field">
       <label class="num"><input id="aVal" type="number" inputmode="decimal" step="0.01" min="0" placeholder="목표 환율"> 원 이하</label>
@@ -200,7 +224,29 @@ select { width: 100%; }
     <ul class="alert-list" id="alerts"></ul>
   </section>
 
-  <main id="board"><div class="loading">환율을 불러오는 중입니다…</div></main>
+  <main>
+    <section class="hero" id="weather"><div class="w-msg">날씨를 불러오는 중…</div></section>
+
+    <section class="card" id="todoCard">
+      <h2><span>오늘 할 일</span><button class="link-btn" id="clearDone" type="button">완료 항목 지우기</button></h2>
+      <div class="todo-add">
+        <input type="text" id="todoIn" placeholder="할 일을 입력하세요" maxlength="80" aria-label="할 일">
+        <button class="btn primary small" id="todoAdd" type="button">추가</button>
+      </div>
+      <ul class="todos" id="todos"></ul>
+    </section>
+
+    <div id="marketWrap">
+      <section class="card"><h2>국내 증시</h2><div class="tiles" id="kr"></div></section>
+      <section class="card"><h2>미국 증시</h2><div class="tiles" id="us"></div></section>
+      <section class="card"><h2>국제 유가</h2><div class="tiles" id="oil"></div></section>
+      <section class="card"><h2>원화 환율</h2><div id="fx"></div></section>
+    </div>
+    <section class="card" id="setupCard" style="display:none">
+      <div class="setup"><b>증시·유가·환율 데이터가 아직 없어요</b>
+      시세 파일(data.json)을 찾지 못했습니다. GitHub Actions 자동 갱신을 설정하고 한 번 실행하면 이곳에 표시됩니다.</div>
+    </section>
+  </main>
   <p class="note" id="note"></p>
 </div>
 
@@ -208,9 +254,9 @@ select { width: 100%; }
 (function () {
   "use strict";
 
-  var REFRESH_MS = 60000;
   var MAX_SELECT = 5;
   var DEFAULTS = ["USD", "JPY", "EUR", "CNY", "GBP"];
+  var AUTO_REFRESH_MS = 5 * 60 * 1000;
 
   // unit: 표시 단위 (엔, 동, 루피아는 100단위)
   var POOL = [
@@ -236,15 +282,29 @@ select { width: 100%; }
   var byCode = {};
   POOL.forEach(function (c) { byCode[c.code] = c; });
 
+  var CITIES = [
+    { n: "서울", lat: 37.57, lon: 126.98 }, { n: "인천", lat: 37.46, lon: 126.71 },
+    { n: "수원", lat: 37.26, lon: 127.03 }, { n: "성남", lat: 37.42, lon: 127.13 },
+    { n: "용인", lat: 37.24, lon: 127.18 }, { n: "원주", lat: 37.34, lon: 127.92 },
+    { n: "대전", lat: 36.35, lon: 127.38 }, { n: "청주", lat: 36.64, lon: 127.49 },
+    { n: "대구", lat: 35.87, lon: 128.60 }, { n: "울산", lat: 35.54, lon: 129.31 },
+    { n: "부산", lat: 35.18, lon: 129.08 }, { n: "광주", lat: 35.16, lon: 126.85 },
+    { n: "제주", lat: 33.50, lon: 126.53 }
+  ];
+
+  var KR = [["KOSPI", "코스피"], ["KOSDAQ", "코스닥"]];
+  var US = [["SPX", "S&P 500"], ["NASDAQ", "나스닥"], ["DOW", "다우"]];
+  var OIL = [["WTI", "WTI"], ["BRENT", "브렌트유"]];
+
   var $ = function (id) { return document.getElementById(id); };
-  var current = {};     // code -> 원 (표시 단위 기준), 최신
-  var yesterday = {};   // code -> 원, 전일
-  var dataDate = "";
-  var yDate = "";
-  var yTried = "";
+  var market = null;     // data.json 내용
+  var weather = null;    // {temp, feels, code, max, min, rain, pm25, pm10, time}
+  var weatherErr = "";
   var selected = [];
   var pending = [];
   var alerts = [];
+  var todos = [];
+  var loc = { n: "서울", lat: 37.57, lon: 126.98, geo: false };
 
   /* ---------- 저장소 ---------- */
   function load(key, fallback) {
@@ -254,66 +314,207 @@ select { width: 100%; }
   function save(key, val) {
     try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { /* 저장 불가 환경 */ }
   }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
 
   /* ---------- 서식 ---------- */
-  function fmt(n) {
+  function fmtRate(n) {
     var d = Math.abs(n) < 10 ? 3 : 2;
     return n.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d });
   }
+  function fmtLike(n, ref) {
+    var d = Math.abs(ref) < 10 ? 3 : 2;
+    return n.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+  function fmt2(n) { return n.toLocaleString("ko-KR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
   function label(c) { return (c.unit > 1 ? c.unit + " " : "") + c.code; }
-  function hasData() { return Object.keys(current).length > 0; }
-  function md(s) { return s ? Number(s.slice(5, 7)) + "/" + Number(s.slice(8, 10)) : ""; }
+  function two(n) { return n < 10 ? "0" + n : "" + n; }
+  function hm(d) { return two(d.getHours()) + ":" + two(d.getMinutes()); }
+  function mdhm(d) { return (d.getMonth() + 1) + "/" + d.getDate() + " " + hm(d); }
 
-  function pill(code) {
-    var prev = yesterday[code], cur = current[code];
-    if (prev === undefined) return '<span class="pill flat">-</span>';
-    var diff = cur - prev;
+  function pillPct(price, prev) {
+    if (!isFinite(price) || !isFinite(prev) || !prev) return '<span class="pill flat">-</span>';
+    var pct = (price - prev) / prev * 100;
+    if (Math.abs(pct) < 0.005) return '<span class="pill flat">보합</span>';
+    return '<span class="pill ' + (pct > 0 ? "up" : "down") + '">' + (pct > 0 ? "▲ " : "▼ ") + Math.abs(pct).toFixed(2) + "%</span>";
+  }
+  function pillFx(price, prev) {
+    if (!isFinite(price) || !isFinite(prev) || !prev) return '<span class="pill flat">-</span>';
+    var diff = price - prev;
     if (Math.abs(diff) < 0.005) return '<span class="pill flat">변동 없음</span>';
     var pct = Math.abs(diff / prev * 100).toFixed(2);
     return '<span class="pill ' + (diff > 0 ? "up" : "down") + '">' + (diff > 0 ? "▲ " : "▼ ") +
-      fmt(Math.abs(diff)) + " · " + pct + "%</span>";
+      fmtLike(Math.abs(diff), price) + " · " + pct + "%</span>";
   }
 
-  /* ---------- 화면 ---------- */
-  function render() {
-    var board = $("board");
-    if (!hasData()) {
-      board.innerHTML = '<div class="loading">환율을 불러오는 중입니다…</div>';
-      $("note").textContent = "";
+  /* ---------- 날씨 ---------- */
+  function wx(code) {
+    if (code === 0) return ["맑음", "☀️"];
+    if (code === 1) return ["대체로 맑음", "🌤️"];
+    if (code === 2) return ["구름 조금", "⛅"];
+    if (code === 3) return ["흐림", "☁️"];
+    if (code === 45 || code === 48) return ["안개", "🌫️"];
+    if (code >= 51 && code <= 57) return ["이슬비", "🌦️"];
+    if (code >= 61 && code <= 67) return ["비", "🌧️"];
+    if (code >= 71 && code <= 77) return ["눈", "🌨️"];
+    if (code >= 80 && code <= 82) return ["소나기", "🌧️"];
+    if (code === 85 || code === 86) return ["눈 소나기", "🌨️"];
+    if (code >= 95) return ["뇌우", "⛈️"];
+    return ["-", "🌡️"];
+  }
+  // 국내 기준 등급 (㎍/㎥)
+  function gradePM25(v) { return v <= 15 ? "좋음" : v <= 35 ? "보통" : v <= 75 ? "나쁨" : "매우 나쁨"; }
+  function gradePM10(v) { return v <= 30 ? "좋음" : v <= 80 ? "보통" : v <= 150 ? "나쁨" : "매우 나쁨"; }
+
+  function getJson(url) {
+    return fetch(url).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    });
+  }
+
+  function fetchWeather() {
+    var q = "latitude=" + loc.lat + "&longitude=" + loc.lon;
+    var wUrl = "https://api.open-meteo.com/v1/forecast?" + q +
+      "&current=temperature_2m,apparent_temperature,weather_code" +
+      "&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=1";
+    var aUrl = "https://air-quality-api.open-meteo.com/v1/air-quality?" + q + "&current=pm10,pm2_5&timezone=auto";
+    return Promise.allSettled([getJson(wUrl), getJson(aUrl)]).then(function (res) {
+      if (res[0].status !== "fulfilled") {
+        weather = null;
+        weatherErr = "날씨를 불러오지 못했어요 (" + (res[0].reason && res[0].reason.message || "오류") + ")";
+        return;
+      }
+      var w = res[0].value, a = res[1].status === "fulfilled" ? res[1].value : null;
+      weatherErr = "";
+      weather = {
+        temp: w.current.temperature_2m,
+        feels: w.current.apparent_temperature,
+        code: w.current.weather_code,
+        max: w.daily.temperature_2m_max[0],
+        min: w.daily.temperature_2m_min[0],
+        rain: w.daily.precipitation_probability_max[0],
+        pm25: a && a.current ? a.current.pm2_5 : null,
+        pm10: a && a.current ? a.current.pm10 : null,
+        time: new Date()
+      };
+    });
+  }
+
+  function renderWeather() {
+    var el = $("weather");
+    var place = (loc.geo ? "현재 위치" : loc.n);
+    var top = '<div class="w-top"><button class="loc" id="locBtn" type="button">📍 ' + esc(place) + " ▾</button><span>" +
+      (weather ? hm(weather.time) + " 기준" : "") + "</span></div>";
+    if (!weather) {
+      el.innerHTML = top + '<div class="w-msg">' + esc(weatherErr || "날씨를 불러오는 중…") + "</div>";
       return;
     }
-    var first = byCode[selected[0]];
-    var html = '<section class="hero"><div class="hero-top"><b>' + first.name + "</b><span>" + label(first) +
-      ' / KRW</span></div><div class="hero-rate">' + fmt(current[first.code]) + "<small>원</small></div>" +
-      '<div class="hero-sub">' + pill(first.code) +
-      (yesterday[first.code] !== undefined ? '<span class="prev">어제 ' + fmt(yesterday[first.code]) + "</span>" : "") +
-      "</div></section>";
-
-    if (selected.length > 1) {
-      html += '<div class="rows">';
-      selected.slice(1).forEach(function (code) {
-        var c = byCode[code];
-        var hit = alerts.some(function (a) { return a.code === code && a.fired; });
-        html += '<div class="row' + (hit ? " hit" : "") + '"><div class="rn"><b>' + c.name + "</b><span>" + label(c) +
-          '</span></div><div class="rr"><div class="rv">' + fmt(current[code]) + "</div>" + pill(code) + "</div></div>";
-      });
-      html += "</div>";
-    }
-    board.innerHTML = html;
-    $("note").textContent = yDate
-      ? "어제(" + md(yDate) + ") 환율 대비 · 현재 환율은 " + md(dataDate) + " 기준 일 단위 데이터"
-      : "어제 환율을 불러오지 못했습니다";
+    var d = wx(weather.code);
+    var chips = '<span>최고 ' + Math.round(weather.max) + "° / 최저 " + Math.round(weather.min) + "°</span>";
+    if (weather.rain !== null && weather.rain !== undefined) chips += "<span>강수확률 " + weather.rain + "%</span>";
+    if (weather.pm25 !== null && isFinite(weather.pm25)) chips += "<span>초미세먼지 " + gradePM25(weather.pm25) + "</span>";
+    if (weather.pm10 !== null && isFinite(weather.pm10)) chips += "<span>미세먼지 " + gradePM10(weather.pm10) + "</span>";
+    el.innerHTML = top +
+      '<div class="w-main"><div><div class="w-temp">' + Math.round(weather.temp) + "°</div>" +
+      '<div class="w-desc">' + d[0] + " · 체감 " + Math.round(weather.feels) + "°</div></div>" +
+      '<div class="w-ico" aria-hidden="true">' + d[1] + "</div></div>" +
+      '<div class="w-chips">' + chips + "</div>";
   }
 
-  function updateBadge() {
-    var n = alerts.length, b = $("badge");
-    b.textContent = n;
-    b.classList.toggle("show", n > 0);
+  /* ---------- 할 일 ---------- */
+  function renderTodos() {
+    var ul = $("todos");
+    if (!todos.length) { ul.innerHTML = '<li><span class="empty">오늘 할 일을 추가해 보세요.</span></li>'; }
+    else {
+      ul.innerHTML = todos.map(function (t) {
+        return '<li class="' + (t.done ? "done" : "") + '"><label><input type="checkbox" data-id="' + t.id + '"' +
+          (t.done ? " checked" : "") + '><span class="t">' + esc(t.text) + '</span></label>' +
+          '<button type="button" data-del="' + t.id + '" aria-label="삭제">×</button></li>';
+      }).join("");
+    }
+    $("clearDone").style.display = todos.some(function (t) { return t.done; }) ? "" : "none";
+  }
+  function addTodo() {
+    var v = $("todoIn").value.trim();
+    if (!v) { $("todoIn").focus(); return; }
+    todos.push({ id: Date.now(), text: v, done: false });
+    save("bf-todos", todos);
+    $("todoIn").value = "";
+    renderTodos();
+  }
+  $("todoAdd").addEventListener("click", addTodo);
+  $("todoIn").addEventListener("keydown", function (e) { if (e.key === "Enter") addTodo(); });
+  $("todos").addEventListener("change", function (e) {
+    var id = e.target.getAttribute("data-id");
+    if (!id) return;
+    todos.forEach(function (t) { if (String(t.id) === id) t.done = e.target.checked; });
+    save("bf-todos", todos);
+    renderTodos();
+  });
+  $("todos").addEventListener("click", function (e) {
+    var id = e.target.getAttribute && e.target.getAttribute("data-del");
+    if (!id) return;
+    todos = todos.filter(function (t) { return String(t.id) !== id; });
+    save("bf-todos", todos);
+    renderTodos();
+  });
+  $("clearDone").addEventListener("click", function () {
+    todos = todos.filter(function (t) { return !t.done; });
+    save("bf-todos", todos);
+    renderTodos();
+  });
+
+  /* ---------- 시장 ---------- */
+  function tilesHtml(list, prefix) {
+    var m = market.markets || {};
+    return list.map(function (it) {
+      var q = m[it[0]];
+      if (!q) return '<div class="tile"><div class="tn">' + it[1] + '</div><div class="tv">-</div></div>';
+      return '<div class="tile"><div class="tn">' + it[1] + '</div><div class="tv">' + (prefix || "") + fmt2(q.price) +
+        "</div>" + pillPct(q.price, q.prev) + "</div>";
+    }).join("");
+  }
+
+  function fxQuote(code) {
+    var q = market && market.fx && market.fx[code];
+    if (!q) return null;
+    var u = byCode[code].unit;
+    return { price: q.price * u, prev: q.prev * u };
+  }
+
+  function renderMarket() {
+    var has = market && market.markets;
+    $("marketWrap").style.display = has ? "" : "none";
+    $("setupCard").style.display = has ? "none" : "";
+    if (!has) { $("note").textContent = ""; return; }
+
+    $("kr").innerHTML = tilesHtml(KR);
+    $("us").innerHTML = tilesHtml(US);
+    $("oil").innerHTML = tilesHtml(OIL, "$");
+
+    var html = "";
+    selected.forEach(function (code) {
+      var c = byCode[code], q = fxQuote(code);
+      var hit = alerts.some(function (a) { return a.code === code && a.fired; });
+      html += '<div class="row' + (hit ? " hit" : "") + '"><div class="rn"><b>' + c.name + "</b><span>" + label(c) +
+        '</span></div><div class="rr">' +
+        (q ? '<div class="rv">' + fmtRate(q.price) + "</div>" + pillFx(q.price, q.prev) : '<div class="rv">-</div>') +
+        "</div></div>";
+    });
+    $("fx").innerHTML = html;
+
+    var t = market.updated ? new Date(market.updated) : null;
+    $("note").innerHTML = "등락은 전일 종가 대비입니다. 시세는 약 30분 간격으로 갱신되며 지연될 수 있어요." +
+      (t && !isNaN(t) ? "<br>시세 갱신 " + mdhm(t) : "") + "<br>참고용 정보이며 투자 판단의 근거로 쓰지 마세요.";
   }
 
   /* ---------- 패널 ---------- */
   function openPanel(which) {
-    var map = { pick: ["pickPanel", "pickBtn"], alert: ["alertPanel", "bellBtn"] };
+    var map = { set: ["setPanel", "setBtn"], alert: ["alertPanel", "bellBtn"] };
     Object.keys(map).forEach(function (k) {
       var p = $(map[k][0]), b = $(map[k][1]);
       var show = (k === which) && !p.classList.contains("show");
@@ -333,12 +534,21 @@ select { width: 100%; }
     $("pickSave").disabled = pending.length === 0;
   }
 
-  $("pickBtn").addEventListener("click", function () {
+  $("setBtn").addEventListener("click", function () {
     pending = selected.slice();
     renderChips();
-    openPanel("pick");
+    openPanel("set");
   });
   $("bellBtn").addEventListener("click", function () { openPanel("alert"); });
+  $("weather").addEventListener("click", function (e) {
+    if (e.target.id === "locBtn") {
+      pending = selected.slice();
+      renderChips();
+      var p = $("setPanel");
+      if (!p.classList.contains("show")) openPanel("set");
+      p.scrollIntoView({ block: "nearest" });
+    }
+  });
   $("chips").addEventListener("change", function (e) {
     var code = e.target.value, i = pending.indexOf(code);
     if (e.target.checked && i === -1 && pending.length < MAX_SELECT) pending.push(code);
@@ -348,19 +558,59 @@ select { width: 100%; }
   $("pickSave").addEventListener("click", function () {
     if (!pending.length) return;
     selected = pending.slice();
-    save("fx-selected", selected);
+    save("bf-selected", selected);
     closePanels();
-    render();
+    renderMarket();
   });
-  $("pickCancel").addEventListener("click", closePanels);
+  $("setClose").addEventListener("click", closePanels);
+
+  /* 지역 선택 */
+  function renderLocSel() {
+    var html = '<option value="geo">📍 현재 위치 사용</option>';
+    CITIES.forEach(function (c, i) {
+      html += '<option value="' + i + '">' + c.n + "</option>";
+    });
+    $("locSel").innerHTML = html;
+    var idx = -1;
+    if (!loc.geo) CITIES.forEach(function (c, i) { if (c.n === loc.n) idx = i; });
+    $("locSel").value = loc.geo ? "geo" : String(idx >= 0 ? idx : 0);
+  }
+  function applyLoc() {
+    save("bf-loc", loc);
+    weather = null; weatherErr = "";
+    renderWeather();
+    fetchWeather().then(renderWeather);
+  }
+  $("locSel").addEventListener("change", function () {
+    var v = this.value;
+    if (v === "geo") {
+      if (!navigator.geolocation) { showError("이 브라우저는 위치 기능을 지원하지 않아요."); renderLocSel(); return; }
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        loc = { n: "현재 위치", lat: Math.round(pos.coords.latitude * 100) / 100,
+                lon: Math.round(pos.coords.longitude * 100) / 100, geo: true };
+        applyLoc();
+      }, function () {
+        showError("위치 권한이 거부되었거나 확인할 수 없어요. 도시를 직접 선택해 주세요.");
+        renderLocSel();
+      }, { timeout: 10000 });
+    } else {
+      var c = CITIES[Number(v)];
+      loc = { n: c.n, lat: c.lat, lon: c.lon, geo: false };
+      applyLoc();
+    }
+  });
 
   /* ---------- 알림 ---------- */
+  function updateBadge() {
+    var n = alerts.length, b = $("badge");
+    b.textContent = n;
+    b.classList.toggle("show", n > 0);
+  }
   function renderAlerts() {
-    var ul = $("alerts");
     updateBadge();
-    ul.innerHTML = alerts.map(function (a) {
+    $("alerts").innerHTML = alerts.map(function (a) {
       var c = byCode[a.code];
-      return '<li class="' + (a.fired ? "fired" : "") + '"><span>' + c.name + " " + fmt(a.value) + "원 이하" +
+      return '<li class="' + (a.fired ? "fired" : "") + '"><span>' + c.name + " " + fmtRate(a.value) + "원 이하" +
         (a.fired ? " · 도달" : "") + '</span><button type="button" data-del="' + a.id + '" aria-label="알림 삭제">×</button></li>';
     }).join("");
   }
@@ -378,7 +628,6 @@ select { width: 100%; }
       setTimeout(function () { osc.stop(); ctx.close(); }, 400);
     } catch (e) { /* 소리 재생 불가 */ }
   }
-
   function notify(msg) {
     var b = $("banner");
     b.textContent = msg;
@@ -390,149 +639,99 @@ select { width: 100%; }
       }
     } catch (e) { /* 알림 불가 */ }
   }
-
   function checkAlerts() {
     var changed = false;
     alerts.forEach(function (a) {
-      var cur = current[a.code];
-      if (cur === undefined) return;
-      if (cur <= a.value && !a.fired) {
+      var q = fxQuote(a.code);
+      if (!q) return;
+      if (q.price <= a.value && !a.fired) {
         a.fired = true; changed = true;
-        notify(byCode[a.code].name + " 환율이 " + fmt(cur) + "원으로 목표(" + fmt(a.value) + "원 이하)에 도달했습니다.");
-      } else if (cur > a.value && a.fired) {
+        notify(byCode[a.code].name + " 환율이 " + fmtRate(q.price) + "원으로 목표(" + fmtRate(a.value) + "원 이하)에 도달했습니다.");
+      } else if (q.price > a.value && a.fired) {
         a.fired = false; changed = true; // 다시 올라가면 재알림 가능
       }
     });
-    if (changed) save("fx-alerts", alerts);
+    if (changed) save("bf-alerts", alerts);
   }
-
   $("aAdd").addEventListener("click", function () {
     var v = parseFloat($("aVal").value);
     if (!isFinite(v) || v <= 0) { $("aVal").focus(); return; }
     alerts.push({ id: Date.now(), code: $("aCur").value, value: v, fired: false });
-    save("fx-alerts", alerts);
+    save("bf-alerts", alerts);
     $("aVal").value = "";
     try {
       if ("Notification" in window && Notification.permission === "default") Notification.requestPermission();
     } catch (e) { /* 권한 요청 불가 */ }
     checkAlerts();
-    renderAlerts(); render();
+    renderAlerts(); renderMarket();
   });
   $("alerts").addEventListener("click", function (e) {
     var id = e.target.getAttribute && e.target.getAttribute("data-del");
     if (!id) return;
     alerts = alerts.filter(function (a) { return String(a.id) !== id; });
-    save("fx-alerts", alerts);
+    save("bf-alerts", alerts);
     $("banner").classList.remove("show");
-    renderAlerts(); render();
+    renderAlerts(); renderMarket();
   });
   $("banner").addEventListener("click", function () { this.classList.remove("show"); });
 
   /* ---------- 조회 ---------- */
-  // tag: "latest" 또는 "YYYY-MM-DD". 기본 주소 실패 시 예비 주소로 재시도
-  function getJson(tag) {
-    var urls = [
-      "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@" + tag + "/v1/currencies/usd.json",
-      "https://" + tag + ".currency-api.pages.dev/v1/currencies/usd.json"
-    ];
-    function tryUrl(i) {
-      return fetch(urls[i], { cache: "no-store" })
-        .then(function (r) {
-          if (!r.ok) throw new Error("HTTP " + r.status);
-          return r.json();
-        })
-        .catch(function (err) {
-          if (i + 1 < urls.length) return tryUrl(i + 1);
-          throw err;
-        });
-    }
-    return tryUrl(0);
+  function showError(msg) {
+    var e = $("error");
+    e.textContent = msg;
+    e.classList.add("show");
   }
 
-  function toKrw(data) {
-    var usd = data && data.usd;
-    if (!usd || !usd.krw) throw new Error("응답 형식 오류");
-    var out = {};
-    POOL.forEach(function (c) {
-      var r = usd[c.code.toLowerCase()];
-      if (r) out[c.code] = (usd.krw / r) * c.unit;
-    });
-    return out;
+  function fetchMarket() {
+    return fetch("data.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .then(function (d) { market = d; })
+      .catch(function () { market = null; });
   }
 
-  function shiftDate(s, days) {
-    var d = new Date(s + "T00:00:00Z");
-    d.setUTCDate(d.getUTCDate() + days);
-    return d.toISOString().slice(0, 10);
-  }
-
-  // 기준일 하루 전부터 최대 3일 전까지 순서대로 시도
-  function fetchYesterday(date) {
-    function attempt(back) {
-      if (back > 3) return Promise.resolve(null);
-      var d = shiftDate(date, -back);
-      return getJson(d).then(function (data) {
-        return { date: d, rates: toKrw(data) };
-      }).catch(function () { return attempt(back + 1); });
-    }
-    return attempt(1);
-  }
-
-  function fetchRates() {
+  function refreshAll() {
     var btn = $("refresh");
     btn.disabled = true;
     btn.classList.add("spin");
-    return getJson("latest")
-      .then(function (data) {
-        var next = toKrw(data);
-        var date = data.date || "";
-        var needY = date && yTried !== date;
-        current = next;
-        dataDate = date;
-        if (needY) { yTried = date; yesterday = {}; yDate = ""; }
-        return needY ? fetchYesterday(date) : null;
-      })
-      .then(function (y) {
-        if (y) { yesterday = y.rates; yDate = y.date; }
-        checkAlerts();
-        render(); renderAlerts();
-        $("error").classList.remove("show");
-        $("updated").textContent = dataDate ? md(dataDate) + " 기준 · " + new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }) + " 조회" : "";
-      })
-      .catch(function (err) {
-        var e = $("error");
-        e.textContent = "환율을 가져오지 못했어요 (" + err.message + "). 인터넷 연결을 확인하고, 이 파일을 저장해 브라우저로 직접 열었는지 확인해 주세요.";
-        e.classList.add("show");
-        $("updated").textContent = "조회 실패";
-        render();
-      })
-      .then(function () {
-        btn.disabled = false;
-        btn.classList.remove("spin");
-      });
+    $("error").classList.remove("show");
+    return Promise.all([fetchWeather(), fetchMarket()]).then(function () {
+      renderWeather();
+      checkAlerts();
+      renderMarket();
+      renderAlerts();
+    }).then(function () {
+      btn.disabled = false;
+      btn.classList.remove("spin");
+    });
   }
-  $("refresh").addEventListener("click", function () { fetchRates(); });
-  document.addEventListener("visibilitychange", function () {
-    if (!document.hidden) fetchRates();
-  });
+  $("refresh").addEventListener("click", refreshAll);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) refreshAll(); });
 
   /* ---------- 초기화 ---------- */
+  $("today").textContent = new Date().toLocaleDateString("ko-KR", { month: "long", day: "numeric", weekday: "long" });
   $("aCur").innerHTML = POOL.map(function (c) {
     return '<option value="' + c.code + '">' + c.name + " (" + label(c) + ")</option>";
   }).join("");
 
-  selected = load("fx-selected", DEFAULTS).filter(function (c, i, arr) {
+  selected = load("bf-selected", load("fx-selected", DEFAULTS)).filter(function (c, i, arr) {
     return byCode[c] && arr.indexOf(c) === i;
   }).slice(0, MAX_SELECT);
   if (!selected.length) selected = DEFAULTS.slice();
 
-  alerts = load("fx-alerts", []).filter(function (a) { return a && byCode[a.code] && isFinite(a.value); });
-  try { localStorage.removeItem("fx-holdings"); } catch (e) { /* 무시 */ }
+  alerts = load("bf-alerts", load("fx-alerts", [])).filter(function (a) { return a && byCode[a.code] && isFinite(a.value); });
+  todos = load("bf-todos", []).filter(function (t) { return t && t.text; });
+  var savedLoc = load("bf-loc", null);
+  if (savedLoc && isFinite(savedLoc.lat) && isFinite(savedLoc.lon)) loc = savedLoc;
 
+  renderLocSel();
+  renderWeather();
+  renderTodos();
   renderAlerts();
-  render();
-  fetchRates();
-  setInterval(fetchRates, REFRESH_MS);
+  refreshAll();
+  setInterval(refreshAll, AUTO_REFRESH_MS);
 })();
 </script>
 </body>

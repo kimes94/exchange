@@ -1,6 +1,6 @@
 {
-  "name": "원화 환율",
-  "short_name": "환율",
+  "name": "오늘 브리핑",
+  "short_name": "브리핑",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
